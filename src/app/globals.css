@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { -webkit-font-smoothing: antialiased; }
+body { background: var(--surface-page); color: var(--ink-base); }
+
+/* ==========================================================================
+   .article-content — Enamel(치과) 타이포그래피 시스템.
+   The generator emits exactly this tag vocabulary and nothing else:
+     h2 h3 p strong em ul ol li a blockquote table thead tbody tr th td hr
+     plus <ul class="checklist">
+   Every value comes from --* vars projected by src/design/tailwind-plugin.ts.
+
+   PER-SITE 구조 시그니처: 밑줄 없는 민트 사각 마커 h2, CSS 카운터 번호가 붙는
+   brand-50 채움 카드 h3, 큰따옴표 글리프의 라운드 인용 카드(좌측 바 없음),
+   솔리드 짙은 헤더 + 지브라 행 + 라운드 클리핑 테이블(괘선 없음),
+   민트 원 + 흰 체크 마커의 맨몸 체크리스트, 2px 민트 그라디언트 hr.
+   ========================================================================== */
+.article-content {
+  max-width: var(--article-measure);
+  counter-reset: clinic;
+}
+
+/* h2 — 보더 없음. 민트 사각 마커 + 볼드 헤딩 */
+.article-content h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 3.25rem;
+  margin-bottom: 1.15rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink-base);
+}
+.article-content h2::before {
+  content: '';
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 3.5px;
+  background: var(--brand-500);
+}
+
+/* h3(병원) — brand-50 채움 카드, 흰 원형 칩에 CSS 카운터 번호 */
+.article-content h3 {
+  counter-increment: clinic;
+  position: relative;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.4rem 1rem 3.7rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--brand-700);
+  background: var(--brand-50);
+  border-radius: 20px;
+}
+.article-content h3::before {
+  content: counter(clinic, decimal-leading-zero);
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  margin-top: -1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background: var(--surface-card);
+  color: var(--brand-600);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 2rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.article-content h2 + h3 { margin-top: 1.5rem; }
+
+.article-content p {
+  margin-bottom: 1.25rem;
+  font-size: var(--article-size);
+  line-height: var(--article-leading);
+  color: var(--ink-muted);
+}
+
+/* 문단 선두 <strong>는 라벨 — 채운 민트 알약 */
+.article-content p > strong:first-child {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.15rem 0.8rem;
+  border-radius: 9999px;
+  background: var(--brand-100);
+  color: var(--brand-800);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.article-content a {
+  color: var(--brand-700);
+  text-decoration: underline;
+  text-decoration-color: var(--brand-300);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.article-content a:hover {
+  color: var(--brand-900);
+  text-decoration-color: var(--brand-500);
+}
+
+.article-content ul, .article-content ol { margin: 0 0 1.5rem 1.25rem; }
+.article-content li { margin-bottom: 0.5rem; color: var(--ink-muted); line-height: 1.8; }
+.article-content li::marker { color: var(--brand-400); }
+
+/* 리뷰 인용 — brand-50 라운드 카드, 좌측 바 없음, 큰따옴표 글리프 */
+.article-content blockquote {
+  position: relative;
+  margin: 1.75rem 0;
+  padding: 1.35rem 1.5rem 1.35rem 3.4rem;
+  background: var(--brand-50);
+  border-radius: 20px;
+  color: var(--ink-muted);
+  font-style: normal;
+}
+.article-content blockquote::before {
+  content: '\201C';
+  position: absolute;
+  left: 1rem;
+  top: 0.45rem;
+  font-size: 2.75rem;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--brand-400);
+}
+.article-content blockquote p { margin-bottom: 0; }
+.article-content blockquote p + p { margin-top: 0.5rem; }
+
+/* 표 — 솔리드 짙은 민트 헤더(흰 글자) + brand-50 지브라, 라운드 클리핑, 괘선 없음 */
+.article-content table {
+  width: 100%;
+  margin: 1.75rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  font-size: 0.9375rem;
+  box-shadow: 0 1px 2px rgba(11, 43, 41, 0.05), 0 14px 32px -18px rgba(11, 43, 41, 0.2);
+}
+.article-content th {
+  padding: 0.8rem 1rem;
+  background: var(--brand-700);
+  color: #fff;
+  text-align: left;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.article-content td {
+  padding: 0.8rem 1rem;
+  background: var(--surface-card);
+  color: var(--ink-muted);
+}
+.article-content tbody tr:nth-child(even) td { background: var(--brand-50); }
+
+/* 체크리스트 — 카드 없이, 채운 민트 원 + 흰 체크 */
+.article-content ul.checklist { margin-left: 0; list-style: none; }
+.article-content ul.checklist li {
+  position: relative;
+  margin-bottom: 0.9rem;
+  padding: 0.2rem 0 0.2rem 2.5rem;
+}
+.article-content ul.checklist li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 9999px;
+  background: var(--brand-500);
+}
+.article-content ul.checklist li::after {
+  content: '';
+  position: absolute;
+  left: 0.42rem;
+  top: 0.85rem;
+  width: 0.56rem;
+  height: 0.3rem;
+  border-left: 2.5px solid #fff;
+  border-bottom: 2.5px solid #fff;
+  transform: rotate(-45deg);
+}
+.article-content ul.checklist li strong { color: var(--ink-base); }
+
+/* hr — 2px 민트 그라디언트 라인 */
+.article-content hr {
+  border: 0;
+  height: 2px;
+  margin: 3rem 0;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--brand-500), var(--brand-100));
+}
