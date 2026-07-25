@@ -4,6 +4,7 @@
 // 일러스트의 분석 프로세스, 카드가 아닌 2열 디바이더 리스트 최신 글.
 // 타일 그리드·다크 히어로·방사형 메뉴 없음 — 레이아웃 구조 자체가 다르다.
 import Link from 'next/link';
+import { getBaseUrl } from '@/lib/site-url';
 import { SITE } from '@/lib/site.config';
 import { getLatestArticles } from '@/lib/articles';
 import { ArchDiagram } from '@/app/components/decor/ArchDiagram';
@@ -12,7 +13,7 @@ import { SpecialtyIcon } from '@/app/components/icons';
 
 export const revalidate = 21600;
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `https://${SITE.domain}`;
+const baseUrl = getBaseUrl();
 
 // "치아 상태로 찾기" — 아치 SVG(320x240) 기준 % 좌표 핫스팟
 const HOTSPOTS = [
