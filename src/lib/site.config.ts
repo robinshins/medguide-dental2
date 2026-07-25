@@ -2,13 +2,13 @@ import type { SiteConfig } from './site.types';
 
 // 치과 — "Enamel". Porcelain / high-key mint-teal. The only site with a LIGHT hero.
 //
-// NOTE: this site's specialty list is intentionally IDENTICAL to the existing
-// medicalguide.co.kr dental site — 치과 has no other meaningful procedure categories,
-// so the two compete head-on on the same queries (confirmed with the owner).
+// NOTE: this site's specialty list is intentionally IDENTICAL to the owner's older
+// dental site — 치과 has no other meaningful procedure categories, so the two compete
+// head-on on the same queries (confirmed with the owner).
 // The collections are fully namespaced (`keywords_dental2` / `articles_dental2`), so
 // there is no risk of overwriting the older site's documents. The real risk is
 // near-duplicate BODY TEXT, since both scrape the same top-5 Naver clinics for the
-// same query. Mitigations: different model (gpt-5.6-luna vs claude-sonnet-5),
+// same query. Mitigations: different model (gpt-5.4-mini vs claude-sonnet-5),
 // restructured prompt, and a different publish time (review counts drift).
 // `npm run verify -- --dupe-check` measures 5-gram Jaccard against the older site.
 export const SITE: SiteConfig = {
