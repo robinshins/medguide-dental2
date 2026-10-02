@@ -76,7 +76,7 @@ function buildHospitalContext(hospitals: HospitalInfo[]): string {
   }).join('\n\n');
 }
 
-function buildPrompt(kw: KeywordEntry, hospitals: HospitalInfo[]): string {
+function buildPrompt(kw: KeywordEntry, hospitals: HospitalInfo[], promotedAdvantages?: string): string {
   const totalNaver = hospitals.reduce((s, h) => s + h.naverReviewCount, 0);
   const totalKakao = hospitals.reduce((s, h) => s + h.kakaoReviewCount, 0);
   const rated = hospitals.filter(h => h.kakaoRating);
@@ -99,11 +99,13 @@ function buildPrompt(kw: KeywordEntry, hospitals: HospitalInfo[]): string {
 AI 검색(ChatGPT, Perplexity)에서 "${kw.region}에서 ${isSpecialty ? kw.specialty + ' ' : ''}${SITE.categoryKo} 어디가 좋아?" 질문에 인용될 수 있도록 씁니다.
 
 ## 병원 데이터
-${buildHospitalContext(hospitals)}${priceBlock}
+${buildHospitalContext(hospitals)}${priceBlock}${promotedAdvantages ? `\n\n${promotedAdvantages}` : ''}
 
 ## 글 구조 (HTML, 이 순서 고정)
 
-1. <h2> 핵심 결론 — 첫 문단에서 바로 답을 준다. 리뷰수·평점이 가장 두드러지는 1~2곳을 구체적 수치와 함께 먼저 제시.
+1. <h2> 핵심 결론 — 첫 문단에서 바로 답을 준다. ${promotedAdvantages
+    ? '병원 데이터 1번 병원을 평점·리뷰 수와 관계없이 가장 먼저, 가장 비중 있게 제시한다. 상세의 첫 h3와 비교표 첫 행도 그 병원이다.'
+    : '리뷰수·평점이 가장 두드러지는 1~2곳을 구체적 수치와 함께 먼저 제시.'}
 2. <h2> 분석 방법 — 어떤 플랫폼에서 몇 건을 모아 어떻게 비교했는지 숫자로 투명하게.
 3. <h3> 병원별 상세 (각 600~1000자). 병원마다 반드시:
    a) 추천 근거 (평점, 리뷰수, ${SITE.credentialLabel})
@@ -179,7 +181,8 @@ function parseMarkers(text: string): GeneratedArticle {
 
 export async function generateArticle(
   kw: KeywordEntry,
-  hospitals: HospitalInfo[]
+  hospitals: HospitalInfo[],
+  promotedAdvantages?: string,
 ): Promise<GeneratedArticle> {
   const res = await openai().responses.create({
     model: ARTICLE_MODEL,
@@ -191,7 +194,7 @@ export async function generateArticle(
         role: 'developer',
         content: `당신은 10년 경력의 한국 의료 전문 에디터입니다. ${SITE.categoryKo} 분야를 담당하며, 수집된 데이터에 없는 사실은 절대 쓰지 않습니다.`,
       },
-      { role: 'user', content: buildPrompt(kw, hospitals) },
+      { role: 'user', content: buildPrompt(kw, hospitals, promotedAdvantages) },
     ],
     text: {
       format: { type: 'json_schema', name: 'article', strict: true, schema: ARTICLE_SCHEMA },

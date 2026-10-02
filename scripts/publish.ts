@@ -21,6 +21,7 @@ import {
 } from './lib/store';
 import { saveArticle, saveTranslation } from './lib/store';
 import { looksRestricted } from '../src/lib/restricted';
+import { ensurePromotedFirst, getPromotedHospital } from './lib/promoted';
 
 // --- CLI ------------------------------------------------------------------
 const argv = process.argv.slice(2);
@@ -166,15 +167,17 @@ async function publishOne(browser: Browser, kw: KeywordEntry): Promise<Article |
 
   await markInProgress(kw);
 
-  const hospitals = await collectHospitals(browser, kw);
-  if (hospitals.length < MIN_HOSPITALS) {
-    const status = await giveUp(kw, `only ${hospitals.length} hospitals (min ${MIN_HOSPITALS})`);
+  let hospitals = await collectHospitals(browser, kw);
+  const promoted = getPromotedHospital(kw);
+  if (promoted) hospitals = await ensurePromotedFirst(browser, hospitals, promoted);
+  if (hospitals.length === 0 || (!promoted && hospitals.length < MIN_HOSPITALS)) {
+    const status = await giveUp(kw, `only ${hospitals.length} hospitals (min ${promoted ? 1 : MIN_HOSPITALS})`);
     console.log(`  [skip] ${hospitals.length} hospitals → ${status}`);
     return null;
   }
 
   console.log(`  [generate] ${ hospitals.length} hospitals → ${SITE.categoryKo} article`);
-  const generated = await withRetry(() => generateArticle(kw, hospitals), { label: 'generate' });
+  const generated = await withRetry(() => generateArticle(kw, hospitals, promoted?.advantages), { label: 'generate' });
 
   const now = new Date().toISOString();
   const article: Article = {

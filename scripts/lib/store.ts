@@ -8,6 +8,7 @@ import { LANGS } from '../../src/lib/i18n';
 import type {
   Article, ArticleSummary, ArticlesIndex, HospitalInfo, KeywordEntry, TranslatedArticle,
 } from '../../src/lib/types';
+import { getPromotedHospital, pinPromotedFirst } from './promoted';
 
 export function toSummary(a: Article): ArticleSummary {
   return {
@@ -79,7 +80,10 @@ export function orderHospitalsByBody(content: string, hospitals: HospitalInfo[])
 
 export async function saveArticle(article: Article): Promise<void> {
   // 저장 직전에 정렬한다 — 호출부가 잊을 수 없도록 여기에 둔다.
-  article = { ...article, hospitals: orderHospitalsByBody(article.content, article.hospitals || []) };
+  let hospitals = orderHospitalsByBody(article.content, article.hospitals || []);
+  const promoted = getPromotedHospital(article);
+  if (promoted) hospitals = pinPromotedFirst(hospitals, promoted);
+  article = { ...article, hospitals };
   // Document id IS the slug — no language, no category prefix.
   await db.collection(ARTICLES_COLLECTION).doc(article.slug).set(article);
   const summary = toSummary(article);
