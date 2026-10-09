@@ -13,6 +13,7 @@ import type { SiteConfig } from './site.types';
 // `npm run verify -- --dupe-check` measures 5-gram Jaccard against the older site.
 export const SITE: SiteConfig = {
   key: 'dental2',
+  gaId: 'G-CC9HKMNGB4',
 
   categoryKo: '치과',
   siteName: '에나멜 치과가이드',
